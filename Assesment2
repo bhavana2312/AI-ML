@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import skew
+plt.style.use("ggplot")
+plt.rcParams['figure.figsize'] = (12, 8)
+%matplotlib inline
+df=pd.read_csv('/content/Dataset - Housing.csv')
+df.head()
+df.tail()
+df.sample(5)
+df.shape
+df.columns
+df.isnull().sum().sum()
+df.dtypes
+df.info()
+df.describe()
+p = sns.pairplot(df)
+df.corr()
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+p = pd.DataFrame(df)
+p
+from sklearn.linear_model import LinearRegression
+x=df.drop('price',axis=1)
+y=df['price']
+x.head()
+y.head()
+sns.pairplot(df,x_vars=['area','bathrooms','stories'],y_vars='price',height=7,aspect=0.7)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(x, y,test_size=0.2,random_state=0)
+lm1=LinearRegression()
+lm1.fit(X_train,y_train)
+X_test
+y_pred=lm1.predict(X_test)
+from sklearn.metrics import mean_squared_error
+print(mean_squared_error(y_test,y_pred))
