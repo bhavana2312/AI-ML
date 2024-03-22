@@ -1,0 +1,40 @@
+import cv2
+
+# Load the image
+image = cv2.imread('path_to_image.jpg')
+resized_image = cv2.resize(image, (224, 224))
+# Convert to grayscale
+gray_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+# Define coordinates for cropping 
+x, y, w, h = 50, 50, 150, 150
+cropped_image = resized_image[y:y+h, x:x+w]
+# Rotation by 45 degrees
+rows, cols = cropped_image.shape[:2]
+rotation_matrix = cv2.getRotationMatrix2D((cols/2, rows/2), 45, 1)
+rotated_image = cv2.warpAffine(cropped_image, rotation_matrix, (cols, rows))
+# Flip left to right
+flipped_image = cv2.flip(rotated_image, 1)
+# Gaussian Blurring
+blurred_image_gaussian = cv2.GaussianBlur(flipped_image, (5, 5), 0)
+# Median Blurring
+blurred_image_median = cv2.medianBlur(flipped_image, 5)
+# Edge Detection 
+edges = cv2.Canny(blurred_image_gaussian, 100, 200)
+# Background Subtraction 
+background_subtractor = cv2.createBackgroundSubtractorMOG2()
+foreground_mask = background_subtractor.apply(resized_image)
+
+# Display or save the processed images
+cv2.imshow('Original Image', image)
+cv2.imshow('Resized Image', resized_image)
+cv2.imshow('Grayscale Image', gray_image)
+cv2.imshow('Cropped Image', cropped_image)
+cv2.imshow('Rotated Image', rotated_image)
+cv2.imshow('Flipped Image', flipped_image)
+cv2.imshow('Blurred Image (Gaussian)', blurred_image_gaussian)
+cv2.imshow('Blurred Image (Median)', blurred_image_median)
+cv2.imshow('Edge Detection', edges)
+cv2.imshow('Background Subtraction', foreground_mask)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
